@@ -1,16 +1,21 @@
-DROP TABLE movie;
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS characters;
 
-CREATE TABLE movie (
-    movieId INT PRIMARY KEY,
+CREATE TABLE movies (
+    movie_id INT PRIMARY KEY,
     name VARCHAR(255),
     duration INT,
     language VARCHAR(255),
-    startTime INT,
-    endTime INT
+    release_date DATE
 );
 
 
-INSERT INTO movie VALUES
-(1, "Endgame", 180, "English", 1800, 1980),
-(2, "3 idiots", 150, "Hindi", 2000, 2150),
-(3, "Joker", 100, "English", 1600, 1700);
+CREATE TABLE ratings (
+    rating_id INT PRIMARY KEY,
+    rating INT,
+    review VARCHAR(255),
+    movie_id INT,
+    rater VARCHAR(255),
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE
+);

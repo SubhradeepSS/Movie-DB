@@ -6,19 +6,18 @@ db = sql.connect(host="localhost", user="root", password="subhradeep", database=
 cursor = db.cursor()
 
 @app.route('/movie', methods=['GET', 'POST'])
-def getAllMovies():
+def Movies():
     if request.method == 'GET':
         sqlQuery = "SELECT * from movie"
         cursor.execute(sqlQuery)
         movies = cursor.fetchall()
         movies = [
             {
-                'movieId': movie[0],
+                'movie_id': movie[0],
                 'name': movie[1],
                 'duration': movie[2],
                 'language': movie[3],
-                'startTime': movie[4],
-                'endTime': movie[5]
+                'release': movie[4]
             }
             for movie in movies
         ]
@@ -29,9 +28,9 @@ def getAllMovies():
 
     else:
         movie = request.json
-        sqlQuery = "INSERT INTO movie VALUES (%s, %s, %s, %s, %s, %s)"
+        sqlQuery = "INSERT INTO movie VALUES (%s, %s, %s, %s, %s)"
         cursor.execute(sqlQuery, (
-            movie['movieId'], movie['name'], movie['duration'], movie['language'], movie['startTime'], movie['endTime']
+            movie['movie_id'], movie['name'], movie['duration'], movie['language'], movie['release_date']
         ))
         db.commit()
 
@@ -40,33 +39,32 @@ def getAllMovies():
         }
 
 
-@app.route('/movie/<movieId>', methods=['GET', 'DELETE', 'PUT'])
-def getMovie(movieId):
+@app.route('/movie/<movie_id>', methods=['GET', 'DELETE', 'PUT'])
+def Movie(movie_id):
     if request.method == 'GET':
-        sqlQuery = "SELECT * FROM movie WHERE movieId=%s"
-        cursor.execute(sqlQuery, (movieId,))
+        sqlQuery = "SELECT * FROM movie WHERE movie_id=%s"
+        cursor.execute(sqlQuery, (movie_id,))
 
         try:
             movie = cursor.fetchall()[0]
 
             return {
                 'Movie': {
-                    'movieId': movie[0],
+                    'movie_id': movie[0],
                     'name': movie[1],
                     'duration': movie[2],
                     'language': movie[3],
-                    'startTime': movie[4],
-                    'endTime': movie[5]
+                    'release_date': movie[4]
                 }
             }
         except:
             return {
-                'Response': "Movie with given movieId is not present"
+                'Response': "Movie with given movie_id is not present"
             }
     
     elif request.method == 'DELETE':
-        sqlQuery = "DELETE FROM movie WHERE movieId=%s"
-        cursor.execute(sqlQuery, (movieId,))
+        sqlQuery = "DELETE FROM movie WHERE movie_id=%s"
+        cursor.execute(sqlQuery, (movie_id,))
         db.commit()
 
         return {
@@ -77,24 +75,21 @@ def getMovie(movieId):
         data = request.json
 
         if 'name' in data:
-            sqlQuery = "UPDATE movie SET name=%s WHERE movieId=%s"
-            cursor.execute(sqlQuery, (data['name'], movieId))
+            sqlQuery = "UPDATE movie SET name=%s WHERE movie_id=%s"
+            cursor.execute(sqlQuery, (data['name'], movie_id))
 
         if 'duration' in data:
-            sqlQuery = "UPDATE movie SET duration=%s WHERE movieId=%s"
-            cursor.execute(sqlQuery, (data['duration'], movieId))
+            sqlQuery = "UPDATE movie SET duration=%s WHERE movie_id=%s"
+            cursor.execute(sqlQuery, (data['duration'], movie_id))
 
         if 'language' in data:
-            sqlQuery = "UPDATE movie SET language=%s WHERE movieId=%s"
-            cursor.execute(sqlQuery, (data['language'], movieId))
+            sqlQuery = "UPDATE movie SET language=%s WHERE movie_id=%s"
+            cursor.execute(sqlQuery, (data['language'], movie_id))
 
-        if 'startTime' in data:
-            sqlQuery = "UPDATE movie SET startTime=%s WHERE movieId=%s"
-            cursor.execute(sqlQuery, (data['startTime'], movieId))
+        if 'release_date' in data:
+            sqlQuery = "UPDATE movie SET release_date=%s WHERE movie_id=%s"
+            cursor.execute(sqlQuery, (data['release_date'], movie_id))
 
-        if 'endTime' in data:
-            sqlQuery = "UPDATE movie SET endTime=%s WHERE movieId=%s"
-            cursor.execute(sqlQuery, (data['endTime'], movieId))
 
         db.commit()
 
