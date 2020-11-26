@@ -12,7 +12,7 @@ db = sql.connect(
 cursor = db.cursor()
 
 
-@app.route('/<user>/home', methods=['GET'])
+@app.route('/<user>', methods=['GET'])
 def home(user):
     return render_template('home.html', user=user)
 
@@ -55,8 +55,8 @@ def signup():
         return render_template('signup.html', signupFail="Please try with new username")
 
 
-@app.route('/movies', methods=['GET'])
-def movies():
+@app.route('/<user>/movies', methods=['GET'])
+def movies(user):
     sqlQuery = "SELECT * from movies"
     cursor.execute(sqlQuery)
     movies = cursor.fetchall()
@@ -103,43 +103,70 @@ def addMovie(user):
     return render_template('addmovie.html', movieAdded="Added movie to database successfully")
 
 
-@app.route('/movie/<movie_id>', methods=['GET'])
-def movie(movie_id):
-    cursor.execute("SELECT * FROM movies WHERE movie_id=%s", (movie_id,))
-    movie = cursor.fetchone()
-    movie = {
-        'movie_id': movie[0],
-        'name': movie[1],
-        'duration': movie[2],
-        'language': movie[3],
-        'release_date': movie[4]
-    }
-
-    cursor.execute(
-        "SELECT AVG(rating) FROM ratings INNER JOIN relation ON relation.rating_id=ratings.rating_id WHERE movie_id=%s",
-        (movie['movie_id'],)
-    )
-    movie['avg_rating'] = cursor.fetchone()[0]
-
-    cursor.execute(
-        'SELECT ratings.* FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
-        (movie_id,)
-    )
-    ratings = cursor.fetchall()
-    ratings = [
-        {
-            'rating': rating[1],
-            'review': rating[2]
+@app.route('/<user>/movie/<movie_id>', methods=['GET', 'POST'])
+def movie(user, movie_id):
+    if request.method == 'GET':
+        cursor.execute("SELECT * FROM movies WHERE movie_id=%s", (movie_id,))
+        movie = cursor.fetchone()
+        movie = {
+            'movie_id': movie[0],
+            'name': movie[1],
+            'duration': movie[2],
+            'language': movie[3],
+            'release_date': movie[4]
         }
-        for rating in ratings
-    ]
 
-    return render_template('movie.html', movie=movie, ratings=ratings)
+        cursor.execute(
+            "SELECT AVG(rating) FROM ratings INNER JOIN relation ON relation.rating_id=ratings.rating_id WHERE movie_id=%s",
+            (movie['movie_id'],)
+        )
+        movie['avg_rating'] = cursor.fetchone()[0]
+
+        cursor.execute(
+            'SELECT ratings.* FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
+            (movie_id,)
+        )
+        ratings = cursor.fetchall()
+        ratings = [
+            {
+                'rating': rating[1],
+                'review': rating[2]
+            }
+            for rating in ratings
+        ]
+
+        return render_template('movie.html', movie=movie, ratings=ratings)
+
+    rating = request.form['rating']
+    review = request.form['review']
+    cursor.execute(
+        "INSERT INTO ratings(rating,review) VALUES(%s,%s)", (rating,review,)
+    )
+    db.commit()
+    
+    cursor.execute("INSERT INTO relation VALUES(%s,%s,%s)", (movie_id, cursor.lastrowid, user))
+    db.commit()
+
+    return redirect(url_for('movie', user=user, movie_id=movie_id))
 
 
 @app.route('/<user>/ratings', methods=['GET'])
 def ratings(user):
-    pass
+    cursor.execute(
+        "SELECT ratings.rating,ratings.review,movies.name FROM relation INNER JOIN ratings ON ratings.rating_id=relation.rating_id INNER JOIN movies ON movies.movie_id=relation.movie_id WHERE relation.username=%s",
+        (user,)
+    )
+    res = cursor.fetchall()
+    res = [
+        {
+            'rating': r[0],
+            'review': r[1],
+            'movie_name': r[2]
+        }
+        for r in res
+    ]
+
+    return render_template('ratings.html', ratings=res)
 
 
 app.run(debug=True)

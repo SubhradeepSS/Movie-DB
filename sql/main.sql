@@ -23,7 +23,7 @@ CREATE TABLE users (
 
 
 CREATE TABLE ratings (
-    rating_id INT PRIMARY KEY,
+    rating_id INT PRIMARY KEY AUTO_INCREMENT,
     rating INT,
     review VARCHAR(255)
 );
