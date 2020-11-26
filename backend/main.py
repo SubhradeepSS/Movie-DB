@@ -54,7 +54,7 @@ def signup():
 
 @app.route('/movies', methods=['GET'])
 def movies():
-    sqlQuery = "SELECT * from movie"
+    sqlQuery = "SELECT * from movies"
     cursor.execute(sqlQuery)
     movies = cursor.fetchall()
     movies = [
@@ -74,7 +74,7 @@ def movies():
 @app.route('/<user>/addMovie', methods=['GET', 'POST'])
 def addMovie(user):
     if user != 'admin':
-        return redirect('home', user=user)
+        return redirect(url_for('home', user=user))
 
     if request.method == 'GET':
         return render_template('addmovie.html')
