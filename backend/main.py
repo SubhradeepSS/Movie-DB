@@ -145,19 +145,36 @@ def movie(user, movie_id):
         movie['avg_rating'] = cursor.fetchone()[0]
 
         cursor.execute(
-            'SELECT ratings.* FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
-            (movie_id,)
+            'SELECT ratings.*,relation.username FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s AND relation.username=%s',
+            (movie_id, user,)
         )
+        # user_of_rating
         ratings = cursor.fetchall()
         ratings = [
             {
+                'id': rating[0],
                 'rating': rating[1],
-                'review': rating[2]
+                'review': rating[2],
+                'user_of_rating':rating[3]
             }
             for rating in ratings
         ]
-
-        return render_template('movie.html', movie=movie, ratings=ratings, user=user)
+        cursor.execute(
+            'SELECT ratings.*,relation.username FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
+            (movie_id,)
+        )
+        all_ratings = cursor.fetchall()
+        all_ratings = [
+            {
+                'id': rating[0],
+                'rating': rating[1],
+                'review': rating[2],
+                'user_of_rating':rating[3]
+            }
+            for rating in all_ratings
+        ]
+        size = len(ratings)
+        return render_template('movie.html', movie=movie, ratings=ratings, user=user, size=size, all_ratings=all_ratings)
 
     rating = request.form['rating']
     review = request.form['review']
@@ -165,7 +182,6 @@ def movie(user, movie_id):
         "INSERT INTO ratings(rating,review) VALUES(%s,%s)", (rating, review,)
     )
     db.commit()
-
     cursor.execute("INSERT INTO relation VALUES(%s,%s,%s)",
                    (movie_id, cursor.lastrowid, user))
     db.commit()
@@ -228,6 +244,45 @@ def movie_delete(user, movie_id):
         cursor.execute(sql_query, (movie_id,))
         db.commit()
         return redirect(url_for('movies', user=user))
+
+
+@app.route('/<user>/rating_edit/<movie_id>/<rating_id>', methods=['GET', 'POST'])
+def rating_edit(user, movie_id, rating_id):
+    if request.method == 'GET':
+        cursor.execute(
+            'SELECT ratings.* FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s AND relation.username=%s',
+            (movie_id, user,)
+        )
+        ratings = cursor.fetchone()
+        ratings = {
+            'rating': ratings[1],
+            'review': ratings[2]
+        }
+        cursor.execute("SELECT * FROM movies WHERE movie_id=%s", (movie_id,))
+        movie = cursor.fetchone()
+        movie = {
+            'movie_id': movie[0],
+            'name': movie[1],
+            'duration': movie[2],
+            'language': movie[3],
+            'release_date': movie[4]
+        }
+        return render_template('rating_edit.html', ratings=ratings, user=user, movie_id=movie_id, movie=movie)
+    rating = request.form['rating']
+    review = request.form['review']
+    sql_query = "UPDATE ratings SET rating =%s ,review =%s WHERE rating_id=%s"
+    cursor.execute(sql_query, (rating, review, rating_id,))
+    db.commit()
+    return redirect(url_for('movie', user=user, movie_id=movie_id))
+
+
+@app.route('/<user>/rating_delete/<movie_id>/<rating_id>', methods=['GET'])
+def rating_delete(user, movie_id, rating_id):
+    if request.method == 'GET':
+        sql_query = "DELETE FROM ratings WHERE rating_id = %s"
+        cursor.execute(sql_query, (rating_id,))
+        db.commit()
+        return redirect(url_for('movie', user=user, movie_id=movie_id))
 
 
 app.run(debug=True)

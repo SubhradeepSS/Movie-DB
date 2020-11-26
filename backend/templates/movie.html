@@ -23,19 +23,24 @@
 
         Average Rating:- {{ movie.avg_rating }}
     </div>
-
+    {% if user == 'admin' %}
     <div>
-        <h2>Ratings</h2>
+        <h2>User Ratings</h2>
         <ul>
-            {% for rating in ratings %}
+            {% for rating in all_ratings %}
             <li>
+                User : {{ rating.user_of_rating }} <br>
                 Rating: {{ rating.rating }} <br>
-                Review: {{ rating.review }}
+                Review: {{ rating.review }} <br>
+                <a href = {{ url_for('rating_delete',user= user,movie_id=movie.movie_id,rating_id = rating.id) }}> 
+                Delete
+                </a>
             </li>
             {% endfor %}
         </ul>
     </div>
-
+    {% endif %}
+    {% if size == 0 %}
     <div>
         <h2>Give rating</h2>
         <form method="post">
@@ -44,6 +49,18 @@
             <input type="submit" value="Rate">
         </form>
     </div>
+    <br>
+    {% else %}
+    <h2>Your rating </h2>
+        {% for rating in ratings %}
+            <li>
+                Rating: {{ rating.rating }} <br>
+                Review: {{ rating.review }} <br>
+                <a href = {{ url_for('rating_edit', user = user , movie_id = movie.movie_id,rating_id = rating.id )}} >Edit</a>
+            </li>
+        {% endfor %}
+    {% endif %}
+    <br>
     <br>
     <a href={{ url_for('home', user=user) }}>Home</a>
 </body>
