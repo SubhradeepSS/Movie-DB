@@ -60,7 +60,13 @@
             </li>
         {% endfor %}
     {% endif %}
-    <br>
+    <br><br>
+
+    <a href = {{ url_for('all_ratings',user=user,movie_id=movie.movie_id) }}> 
+    View All Ratings of this Movie
+    </a>
+    <br><br>
+    <a href={{ url_for('ratings', user=user) }}>View Your ratings</a>
     <br>
     <a href={{ url_for('home', user=user) }}>Home</a>
 </body>

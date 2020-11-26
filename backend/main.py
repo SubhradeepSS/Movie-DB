@@ -192,7 +192,7 @@ def movie(user, movie_id):
 @app.route('/<user>/ratings', methods=['GET'])
 def ratings(user):
     cursor.execute(
-        "SELECT ratings.rating,ratings.review,movies.name FROM relation INNER JOIN ratings ON ratings.rating_id=relation.rating_id INNER JOIN movies ON movies.movie_id=relation.movie_id WHERE relation.username=%s",
+        "SELECT ratings.rating,ratings.review,movies.name,ratings.rating_id,movies.movie_id FROM relation INNER JOIN ratings ON ratings.rating_id=relation.rating_id INNER JOIN movies ON movies.movie_id=relation.movie_id WHERE relation.username=%s",
         (user,)
     )
     res = cursor.fetchall()
@@ -200,7 +200,9 @@ def ratings(user):
         {
             'rating': r[0],
             'review': r[1],
-            'movie_name': r[2]
+            'movie_name': r[2],
+            'rating_id':r[3],
+            'movie_id':r[4]
         }
         for r in res
     ]
@@ -283,6 +285,34 @@ def rating_delete(user, movie_id, rating_id):
         cursor.execute(sql_query, (rating_id,))
         db.commit()
         return redirect(url_for('movie', user=user, movie_id=movie_id))
+
+
+@app.route('/<user>/all_ratings/<movie_id>', methods=['GET'])
+def all_ratings(user, movie_id):
+    if request.method == 'GET':
+        cursor.execute(
+            'SELECT ratings.*,relation.username FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
+            (movie_id,)
+        )
+        all_ratings = cursor.fetchall()
+        all_ratings = [
+            {
+                'id': rating[0],
+                'rating': rating[1],
+                'review': rating[2],
+                'user_of_rating':rating[3],
+            }
+            for rating in all_ratings
+        ]
+        cursor.execute(
+            'SELECT name FROM movies WHERE movie_id=%s',
+            (movie_id,)
+        )
+        temp = cursor.fetchall()
+        name = "Temp"
+        for i in temp:
+            name = i[0]
+        return render_template('all_ratings.html', ratings=all_ratings, user=user, movie_name=name, movie_id=movie_id)
 
 
 app.run(debug=True)

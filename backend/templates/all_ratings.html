@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your ratings</title>
+    <title>All ratings</title>
 </head>
 <body>
-    <h1>Your ratings</h1>
+    <h1>User : {{ user }}</h1>
+    <br>
+    <h3> All the ratings for the movie {{ movie_name }} are</h3>
     <ul>
         {% for rating in ratings %}
             <li>
-                Movie Name: {{ rating.movie_name }} <br>
+                User : {{ rating.user_of_rating }} <br>
                 Rating: {{ rating.rating }} <br>
                 Review: {{ rating.review }} <br>
-                <a href = {{ url_for('rating_edit', user = user , movie_id = rating.movie_id,rating_id = rating.rating_id )}} >Edit</a>
             </li>
+            <br><br>
         {% endfor %}
     </ul>
 
     <br>
-    <a href={{ url_for('home', user=user) }}>Home</a>
+    <a href={{ url_for('movie', user=user, movie_id=movie_id) }}>Back</a>
 </body>
 </html>
