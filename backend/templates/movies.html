@@ -23,7 +23,10 @@
             <br>
 
             <a href={{ url_for('movie', user=user, movie_id=movie.movie_id) }}>View</a>
+            {% if user == 'admin' %}
             <a href={{ url_for('movie_edit', user=user, movie_id=movie.movie_id) }} >Edit</a>
+            {% endif %}
+            
         </li>
         {% endfor %}
     </ol>
