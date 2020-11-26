@@ -71,6 +71,13 @@ def movies():
         for movie in movies
     ]
 
+    for movie in movies:
+        cursor.execute(
+            "SELECT AVG(rating) FROM ratings INNER JOIN relation ON relation.rating_id=ratings.rating_id WHERE movie_id=%s",
+            (movie['movie_id'],)
+        )
+        movie['avg_rating'] = cursor.fetchone()[0]
+
     return render_template('movies.html', movies=movies)
 
 
@@ -98,7 +105,7 @@ def addMovie(user):
 
 @app.route('/movie/<movie_id>', methods=['GET'])
 def movie(movie_id):
-    cursor.execute('SELECT * FROM movies WHERE movie_id=%s', (movie_id))
+    cursor.execute("SELECT * FROM movies WHERE movie_id=%s", (movie_id,))
     movie = cursor.fetchone()
     movie = {
         'movie_id': movie[0],
@@ -109,8 +116,14 @@ def movie(movie_id):
     }
 
     cursor.execute(
+        "SELECT AVG(rating) FROM ratings INNER JOIN relation ON relation.rating_id=ratings.rating_id WHERE movie_id=%s",
+        (movie['movie_id'],)
+    )
+    movie['avg_rating'] = cursor.fetchone()[0]
+
+    cursor.execute(
         'SELECT ratings.* FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
-        (movie_id)
+        (movie_id,)
     )
     ratings = cursor.fetchall()
     ratings = [

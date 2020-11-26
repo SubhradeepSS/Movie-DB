@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie</title>
+</head>
+
+<body>
+    <h1>
+        Name: {{ movie.name }}
+    </h1>
+    <div>
+        Duration:- {{ movie.duration }}
+        <br>
+
+        Language:- {{ movie.language }}
+        <br>
+
+        Release Date:- {{ movie.release_date }}
+        <br>
+
+        Average Rating:- {{ movie.avg_rating }}
+    </div>
+
+    <div>
+        <h2>Ratings</h2>
+        <ul>
+            {% for rating in ratings %}
+                Rating: {{ rating.rating }} <br>
+                Review: {{ rating.review }}
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
+</html>
