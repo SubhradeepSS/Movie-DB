@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <h1>{{ user }}</h1>
+    <h3> Editing Movie </h3>
+    <h3> Movie id :- {{ movie.movie_id}} </h3>
+    <br>
+    <form method="POST">
+        Name:- 
+        <input type="text" name="name"  value = {{ movie.name }}>
+        <br><br>
+        Duration:-
+        <input type="number" name = "duration" value = {{ movie.duration }} >
+        <br><br>
+        Language:-
+        <input type="text" name = "language" value = {{ movie.language }} >
+        <br><br>
+        Release Date:-
+        <input type="date" name = "release_date" value = {{ movie.release_date }} >
+        <br><br>
+        <input type="submit" value="Edit Movie">
+    </form>
+
+    <br>
+    <a href={{ url_for('home', user=user) }}>Home</a>
+</body>
+</html>

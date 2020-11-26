@@ -58,10 +58,10 @@ def signup():
 @app.route('/<user>/profile', methods=['GET', 'POST'])
 def profile(user):
     if request.method == 'GET':
-        cursor.execute('SELECT name,email,contact FROM users WHERE username=%s', (user,))
+        cursor.execute(
+            'SELECT name,email,contact FROM users WHERE username=%s', (user,))
         User = cursor.fetchone()
-        return render_template('profile.html', user=user,name=User[0],email=User[1],contact=User[2])
-
+        return render_template('profile.html', user=user, name=User[0], email=User[1], contact=User[2])
 
     password = request.form['password']
     name = request.form['name']
@@ -71,7 +71,7 @@ def profile(user):
     cursor.execute(
         'UPDATE users SET password=%s,name=%s,email=%s,contact=%s WHERE username=%s',
         (password, name, email, contact, user,)
-        )
+    )
     db.commit()
 
     return redirect(url_for('profile', user=user))
@@ -162,11 +162,12 @@ def movie(user, movie_id):
     rating = request.form['rating']
     review = request.form['review']
     cursor.execute(
-        "INSERT INTO ratings(rating,review) VALUES(%s,%s)", (rating,review,)
+        "INSERT INTO ratings(rating,review) VALUES(%s,%s)", (rating, review,)
     )
     db.commit()
-    
-    cursor.execute("INSERT INTO relation VALUES(%s,%s,%s)", (movie_id, cursor.lastrowid, user))
+
+    cursor.execute("INSERT INTO relation VALUES(%s,%s,%s)",
+                   (movie_id, cursor.lastrowid, user))
     db.commit()
 
     return redirect(url_for('movie', user=user, movie_id=movie_id))
@@ -189,6 +190,35 @@ def ratings(user):
     ]
 
     return render_template('ratings.html', ratings=res, user=user)
+
+
+@app.route('/<user>/movie_edit/<movie_id>', methods=['GET', 'POST'])
+def movie_edit(user, movie_id):
+    if user != 'admin':
+        return redirect(url_for('movie', user=user, movie_id=movie_id))
+    if request.method == 'GET':
+        sql_query = "SELECT * FROM movies WHERE movie_id = %s"
+        cursor.execute(sql_query, (movie_id,))
+        movie = cursor.fetchone()
+        movie = {
+            'movie_id': movie[0],
+            'name': movie[1],
+            'duration': movie[2],
+            'language': movie[3],
+            'release_date': movie[4]
+        }
+        return render_template('movie_edit.html', movie=movie, user=user)
+
+    name = request.form['name']
+    duration = request.form['duration']
+    language = request.form['language']
+    release_date = request.form['release_date']
+
+    sql_query = " UPDATE movies SET name = %s , duration = %s,language = %s,release_date =%s WHERE movie_id = %s"
+    cursor.execute(sql_query, (name, duration,
+                               language, release_date, movie_id,))
+    db.commit()
+    return redirect(url_for('movies', user=user))
 
 
 app.run(debug=True)
