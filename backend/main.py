@@ -1,8 +1,14 @@
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, redirect
 import mysql.connector as sql
+from credentials import CREDENTIALS
 
 app = Flask(__name__)
-db = sql.connect(host="localhost", user="root", password="subhradeep", database="project")
+db = sql.connect(
+        host=CREDENTIALS['host'],
+        user=CREDENTIALS['user'],
+        password=CREDENTIALS['password'],
+        database=CREDENTIALS['database']
+    )
 cursor = db.cursor()
 
 @app.route('/<user>/home', methods=['GET'])
@@ -53,7 +59,7 @@ def movies():
     movies = cursor.fetchall()
     movies = [
         {
-            'movie_id': movie[0]
+            'movie_id': movie[0],
             'name': movie[1],
             'duration': movie[2],
             'language': movie[3],
@@ -91,7 +97,7 @@ def movie(movie_id):
     cursor.execute('SELECT * FROM movies WHERE movie_id=%s', (movie_id))
     movie = cursor.fetchone()
     movie = {
-            'movie_id': movie[0]
+            'movie_id': movie[0],
             'name': movie[1],
             'duration': movie[2],
             'language': movie[3],
