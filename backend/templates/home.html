@@ -7,10 +7,17 @@
   </head>
   <body>
     <h2>{{ user }}</h2>
+
     {% if user == 'admin' %}
     <a href="/admin/addMovie">Add Movie</a>
     <br />
     {% endif %}
+
+    <a href={{ url_for('movies', user=user) }}>View all Movies</a>
+    <br />
+
+    <a href={{ url_for('ratings', user=user) }}>View your ratings</a>
+    <br />
     <a href="/">Logout</a>
   </body>
 </html>

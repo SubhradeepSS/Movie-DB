@@ -22,13 +22,12 @@
             Language:- {{ movie.language }}
             <br>
 
-            Release Date:- {{ movie.release_date }}
-            <br>
-
-            Average Rating:- {{ movie.avg_rating }}
+            <a href={{ url_for('movie', user=user, movie_id=movie.movie_id) }}>View</a>
         </li>
         {% endfor %}
     </ol>
+    <br>
+    <a href={{ url_for('home', user=user) }}>Home</a>
 </body>
 
 </html>

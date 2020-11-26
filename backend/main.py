@@ -78,7 +78,7 @@ def movies(user):
         )
         movie['avg_rating'] = cursor.fetchone()[0]
 
-    return render_template('movies.html', movies=movies)
+    return render_template('movies.html', movies=movies, user=user)
 
 
 @app.route('/<user>/addMovie', methods=['GET', 'POST'])
@@ -135,7 +135,7 @@ def movie(user, movie_id):
             for rating in ratings
         ]
 
-        return render_template('movie.html', movie=movie, ratings=ratings)
+        return render_template('movie.html', movie=movie, ratings=ratings, user=user)
 
     rating = request.form['rating']
     review = request.form['review']
@@ -166,7 +166,7 @@ def ratings(user):
         for r in res
     ]
 
-    return render_template('ratings.html', ratings=res)
+    return render_template('ratings.html', ratings=res, user=user)
 
 
 app.run(debug=True)
