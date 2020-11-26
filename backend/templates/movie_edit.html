@@ -12,16 +12,16 @@
     <br>
     <form method="POST">
         Name:- 
-        <input type="text" name="name"  value = {{ movie.name }}>
+        <input type="text" name="name"  value = "{{ movie.name }}">
         <br><br>
         Duration:-
-        <input type="number" name = "duration" value = {{ movie.duration }} >
+        <input type="number" name = "duration" value = "{{ movie.duration }}" >
         <br><br>
         Language:-
-        <input type="text" name = "language" value = {{ movie.language }} >
+        <input type="text" name = "language" value = "{{ movie.language }}" >
         <br><br>
         Release Date:-
-        <input type="date" name = "release_date" value = {{ movie.release_date }} >
+        <input type="date" name = "release_date" value = "{{ movie.release_date }}" >
         <br><br>
         <input type="submit" value="Edit/Update Movie">
     </form>
