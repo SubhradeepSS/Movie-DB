@@ -221,4 +221,13 @@ def movie_edit(user, movie_id):
     return redirect(url_for('movies', user=user))
 
 
+@app.route('/<user>/movie_delete/<movie_id>', methods=['GET'])
+def movie_delete(user, movie_id):
+    if request.method == 'GET':
+        sql_query = "DELETE FROM movies WHERE movie_id = %s"
+        cursor.execute(sql_query, (movie_id,))
+        db.commit()
+        return redirect(url_for('movies', user=user))
+
+
 app.run(debug=True)
