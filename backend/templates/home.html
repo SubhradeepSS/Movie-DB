@@ -7,6 +7,9 @@
 </head>
 <body>
     {{ user }}
+    {% if user == 'admin' %}
+    <a href="/admin/addMovie">Add Movie</a>
+    {% endif %}
     <a href="/">Logout</a>
 </body>
 </html>

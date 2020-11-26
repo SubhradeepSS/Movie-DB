@@ -85,7 +85,7 @@ def addMovie(user):
     language = request.form['language']
     release_date = request.form['release_date']
 
-    sqlQuery = "INSERT INTO movie VALUES (%s, %s, %s, %s, %s)"
+    sqlQuery = "INSERT INTO movies VALUES (%s, %s, %s, %s, %s)"
     cursor.execute(sqlQuery, (movie_id, name, duration, language, release_date))
     db.commit()
 
