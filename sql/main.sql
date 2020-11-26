@@ -33,7 +33,7 @@ CREATE TABLE relation (
     movie_id INT,
     rating_id INT,
     username VARCHAR(255),
-    FOREIGN KEY(movie_id) REFERENCES movies(movie_id),
-    FOREIGN KEY(rating_id) REFERENCES ratings(rating_id),
-    FOREIGN KEY(username) REFERENCES users(username)
+    FOREIGN KEY(movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY(rating_id) REFERENCES ratings(rating_id) ON DELETE CASCADE,
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
 );

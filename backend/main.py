@@ -55,6 +55,28 @@ def signup():
         return render_template('signup.html', signupFail="Please try with new username")
 
 
+@app.route('/<user>/profile', methods=['GET', 'POST'])
+def profile(user):
+    if request.method == 'GET':
+        cursor.execute('SELECT name,email,contact FROM users WHERE username=%s', (user,))
+        User = cursor.fetchone()
+        return render_template('profile.html', user=user,name=User[0],email=User[1],contact=User[2])
+
+
+    password = request.form['password']
+    name = request.form['name']
+    email = request.form['email']
+    contact = request.form['contact']
+
+    cursor.execute(
+        'UPDATE users SET password=%s,name=%s,email=%s,contact=%s WHERE username=%s',
+        (password, name, email, contact, user,)
+        )
+    db.commit()
+
+    return redirect(url_for('profile', user=user))
+
+
 @app.route('/<user>/movies', methods=['GET'])
 def movies(user):
     sqlQuery = "SELECT * from movies"
