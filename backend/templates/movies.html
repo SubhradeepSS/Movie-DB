@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+  <body>
+    <h3>Movies List</h3>
+    <ol>
+      {% for i in movies %}
+      <li>
+        <ul>
+          Movie id:- {{ i.movie_id }}
+        </ul>
+        <ul>
+          Name:- {{ i.name }}
+        </ul>
+        <ul>
+          Duration:- {{ i.duration }}
+        </ul>
+        <ul>
+          Language:- {{ i.language }}
+        </ul>
+        <ul>
+          Release Date:- {{ i.release_date }}
+        </ul>
+      </li>
+      {% endfor %}
+    </ol>
+  </body>
+</html>

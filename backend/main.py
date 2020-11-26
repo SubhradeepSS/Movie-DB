@@ -4,12 +4,13 @@ from credentials import CREDENTIALS
 
 app = Flask(__name__)
 db = sql.connect(
-        host=CREDENTIALS['host'],
-        user=CREDENTIALS['user'],
-        password=CREDENTIALS['password'],
-        database=CREDENTIALS['database']
-    )
+    host=CREDENTIALS['host'],
+    user=CREDENTIALS['user'],
+    password=CREDENTIALS['password'],
+    database=CREDENTIALS['database']
+)
 cursor = db.cursor()
+
 
 @app.route('/<user>/home', methods=['GET'])
 def home(user):
@@ -23,8 +24,9 @@ def login():
 
     username = request.form['username']
     password = request.form['password']
-    
-    cursor.execute('SELECT * FROM users WHERE username=%s AND password=%s', (username, password))
+
+    cursor.execute(
+        'SELECT * FROM users WHERE username=%s AND password=%s', (username, password))
     user = cursor.fetchone()
     if user:
         return redirect(url_for('home', user=username))
@@ -44,7 +46,8 @@ def signup():
     contact = request.form['contact']
 
     try:
-        cursor.execute('INSERT INTO users VALUES (%s,%s,%s,%s,%s)', (username, password, name, email, contact))
+        cursor.execute('INSERT INTO users VALUES (%s,%s,%s,%s,%s)',
+                       (username, password, name, email, contact))
         db.commit()
         return redirect(url_for('home', user=username))
 
@@ -86,7 +89,8 @@ def addMovie(user):
     release_date = request.form['release_date']
 
     sqlQuery = "INSERT INTO movies VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(sqlQuery, (movie_id, name, duration, language, release_date))
+    cursor.execute(sqlQuery, (movie_id, name,
+                              duration, language, release_date))
     db.commit()
 
     return render_template('addmovie.html', movieAdded="Added movie to database successfully")
@@ -97,17 +101,17 @@ def movie(movie_id):
     cursor.execute('SELECT * FROM movies WHERE movie_id=%s', (movie_id))
     movie = cursor.fetchone()
     movie = {
-            'movie_id': movie[0],
-            'name': movie[1],
-            'duration': movie[2],
-            'language': movie[3],
-            'release_date': movie[4]
-        }
+        'movie_id': movie[0],
+        'name': movie[1],
+        'duration': movie[2],
+        'language': movie[3],
+        'release_date': movie[4]
+    }
 
     cursor.execute(
         'SELECT ratings.* FROM ratings INNER JOIN relation ON ratings.rating_id=relation.rating_id WHERE relation.movie_id=%s',
         (movie_id)
-        )
+    )
     ratings = cursor.fetchall()
     ratings = [
         {
