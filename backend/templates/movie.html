@@ -32,7 +32,7 @@
                 User : {{ rating.user_of_rating }} <br>
                 Rating: {{ rating.rating }} <br>
                 Review: {{ rating.review }} <br>
-                <a href = {{ url_for('rating_delete',user= user,movie_id=movie.movie_id,rating_id = rating.id) }}> 
+                <a href = {{ url_for('rating_delete', movie_id=movie.movie_id, rating_id=rating.id) }}> 
                 Delete
                 </a>
             </li>
@@ -56,9 +56,9 @@
             <li>
                 Rating: {{ rating.rating }} <br>
                 Review: {{ rating.review }} <br>
-                <a href = {{ url_for('rating_edit', user = user , movie_id = movie.movie_id,rating_id = rating.id )}} >Edit</a>
+                <a href = {{ url_for('rating_edit', movie_id=movie.movie_id, rating_id=rating.id )}} >Edit</a>
                 <br>
-                <a href = {{ url_for('rating_delete',user= user,movie_id=movie.movie_id,rating_id = rating.id) }}> 
+                <a href = {{ url_for('rating_delete', movie_id=movie.movie_id, rating_id=rating.id) }}> 
                 Delete
                 </a>
             </li>
@@ -67,14 +67,14 @@
     <br><br>
 
     {% if user != 'admin' %}
-    <a href = {{ url_for('all_ratings',user=user,movie_id=movie.movie_id) }}> 
+    <a href = {{ url_for('all_ratings', movie_id=movie.movie_id) }}> 
     View All Ratings of this Movie
     </a>
     <br><br>
     {% endif %}
-    <a href={{ url_for('ratings', user=user) }}>View Your ratings</a>
+    <a href={{ url_for('ratings') }}>View Your ratings</a>
     <br>
-    <a href={{ url_for('home', user=user) }}>Home</a>
+    <a href={{ url_for('home') }}>Home</a>
 </body>
 
 </html>

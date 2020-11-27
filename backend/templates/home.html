@@ -9,21 +9,21 @@
     <h2>{{ user }}</h2>
 
     {% if user == 'admin' %}
-    <a href="/addMovie">Add Movie</a>
+    <a href={{ url_for('addMovie') }}>Add Movie</a>
     <br />
     {% endif %}
 
    
-    <a href={{ url_for('movies', user=user) }}>View all Movies</a>
+    <a href={{ url_for('movies') }}>View all Movies</a>
     <br />
 
-    <a href={{ url_for('ratings', user=user) }}>View your ratings</a>
+    <a href={{ url_for('ratings') }}>View your ratings</a>
     <br />
 
-    <a href={{ url_for('profile', user=user) }}>View your profile</a>
+    <a href={{ url_for('profile') }}>View your profile</a>
     <br />
      {% if user == 'admin' %}
-    <a href={{ url_for('all_users', user=user) }}>View All Users</a>
+    <a href={{ url_for('all_users') }}>View All Users</a>
     <br>
     {% endif %}
     <a href={{ url_for('logout') }}>Logout</a>
