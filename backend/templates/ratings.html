@@ -14,6 +14,10 @@
                 Rating: {{ rating.rating }} <br>
                 Review: {{ rating.review }} <br>
                 <a href = {{ url_for('rating_edit', user = user , movie_id = rating.movie_id,rating_id = rating.rating_id )}} >Edit</a>
+                <br>
+                <a href = {{ url_for('rating_delete_in_view_your',user= user,movie_id=rating.movie_id,rating_id = rating.rating_id) }}> 
+                Delete
+                </a>
             </li>
         {% endfor %}
     </ul>

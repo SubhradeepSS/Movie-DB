@@ -315,4 +315,13 @@ def all_ratings(user, movie_id):
         return render_template('all_ratings.html', ratings=all_ratings, user=user, movie_name=name, movie_id=movie_id)
 
 
+@app.route('/<user>/rating_delete_in_view_your/<movie_id>/<rating_id>', methods=['GET'])
+def rating_delete_in_view_your(user, movie_id, rating_id):
+    if request.method == 'GET':
+        sql_query = "DELETE FROM ratings WHERE rating_id = %s"
+        cursor.execute(sql_query, (rating_id,))
+        db.commit()
+        return redirect(url_for('ratings', user=user))
+
+
 app.run(debug=True)
