@@ -61,6 +61,8 @@ def profile(user):
         cursor.execute(
             'SELECT name,email,contact FROM users WHERE username=%s', (user,))
         User = cursor.fetchone()
+        if User == None:
+            return redirect(url_for('login'))
         return render_template('profile.html', user=user, name=User[0], email=User[1], contact=User[2])
 
     password = request.form['password']
