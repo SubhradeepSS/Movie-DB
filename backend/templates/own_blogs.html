@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogs</title>
+</head>
+<body>
+    <h1>Your blogs: </h1>
+    <ul>
+        {% for blog in blogs %}
+        <li>
+            <a href={{ url_for('blog', movie_id=blog.movie_id, blog_id=blog.blog_id) }}>{{ blog.heading }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+</html>

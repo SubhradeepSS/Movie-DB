@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+</head>
+<body>
+    <h1>{{ blog.heading }}</h1>
+    <h4>Published on: {{ blog.published_on }}</h4>
+    <h4>Published by: {{ blog.published_by }}</h4>
+    <h3>Content:</h3>
+    <p>{{ blog.content }}</p>
+
+    <div>
+        <h2>Add your comment</h2>
+        <form method="post">
+            <input type="text" name="comment" placeholder="Comment">
+            <input type="submit" value="Comment">
+        </form>
+    </div>
+
+    <div>
+        <h2>Comments: </h2>
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <h3>{{ comment.comment }}</h3>
+                    <p>Published <br>on: <strong>{{ comment.published_on }}</strong>
+                        <br>by: <strong>{{ comment.published_by }}</strong></p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <br><br>
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+</html>

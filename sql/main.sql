@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS movies (
     release_date DATE
 );
 
+
 CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255) PRIMARY KEY,
     password VARCHAR(255),
@@ -14,11 +15,13 @@ CREATE TABLE IF NOT EXISTS users (
     contact VARCHAR(255)
 );
 
+
 CREATE TABLE IF NOT EXISTS ratings (
     rating_id INT PRIMARY KEY AUTO_INCREMENT,
     rating INT,
     review VARCHAR(255)
 );
+
 
 CREATE TABLE IF NOT EXISTS relation (
     movie_id INT,
@@ -29,23 +32,21 @@ CREATE TABLE IF NOT EXISTS relation (
     FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
 );
 
+
 CREATE TABLE IF NOT EXISTS blogs (
     blog_id INT PRIMARY KEY AUTO_INCREMENT,
     heading VARCHAR(255),
-    content TEXT
+    content TEXT,
+    published_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
 );
+
 
 CREATE TABLE IF NOT EXISTS comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT,
-    comment VARCHAR(255)
+    comment VARCHAR(255),
+    published_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
 );
 
-CREATE TABLE IF NOT EXISTS blog_user (
-    username VARCHAR(255),
-    blog_id INT,
-    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
-    FOREIGN KEY (blog_id) REFERENCES blogs(blog_id) ON DELETE CASCADE
-);
 
 CREATE TABLE IF NOT EXISTS comment_blog_user (
     comment_id INT,
@@ -56,9 +57,12 @@ CREATE TABLE IF NOT EXISTS comment_blog_user (
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS blog_movie (
+
+CREATE TABLE IF NOT EXISTS blog_movie_user (
     blog_id INT,
     movie_id INT,
+    username VARCHAR(255),
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
-    FOREIGN KEY (blog_id) REFERENCES blogs(blog_id) ON DELETE CASCADE
+    FOREIGN KEY (blog_id) REFERENCES blogs(blog_id) ON DELETE CASCADE,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
 );

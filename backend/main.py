@@ -59,7 +59,7 @@ def signup():
                        (username, password, name, email, contact))
         db.commit()
         session['user'] = username
-        return redirect(url_for('home', user=username))
+        return redirect(url_for('home'))
 
     except:
         return render_template('signup.html', signupFail="Please try with new username")
@@ -122,7 +122,7 @@ def movies():
 def addMovie():
     user = session['user']
     if user != 'admin':
-        return redirect(url_for('home', user=user))
+        return redirect(url_for('home'))
 
     if request.method == 'GET':
         return render_template('addmovie.html')
@@ -235,7 +235,7 @@ def movie_edit(movie_id):
     user = session['user']
 
     if user != 'admin':
-        return redirect(url_for('movie', user=user, movie_id=movie_id))
+        return redirect(url_for('movie', movie_id=movie_id))
     if request.method == 'GET':
         sql_query = "SELECT * FROM movies WHERE movie_id = %s"
         cursor.execute(sql_query, (movie_id,))
@@ -376,6 +376,120 @@ def delete_user(user_name):
         cursor.execute(sql_query, (user_name,))
         db.commit()
         return redirect(url_for('all_users'))
+
+
+@app.route('/<movie_id>/blogs', methods=['GET', 'POST'])
+def blogs(movie_id):
+    user = session['user']
+
+    if request.method == 'GET':
+        cursor.execute(
+            'SELECT blogs.* FROM blogs INNER JOIN blog_movie_user ON blogs.blog_id=blog_movie_user.blog_id WHERE blog_movie_user.movie_id=%s',
+            (movie_id,)
+        )
+        blogs = cursor.fetchall()
+
+        blogs = [
+            {
+                'blog_id': blog[0],
+                'heading': blog[1],
+                'content': blog[2],
+                'published_on': blog[3]
+            }
+            for blog in blogs
+        ]
+
+        cursor.execute('SELECT name FROM movies WHERE movie_id=%s', (movie_id,))
+        movie = cursor.fetchone()[0]
+
+        return render_template('blogs.html', user=user, blogs=blogs, movie=movie, movie_id=movie_id)
+
+    heading = request.form['heading']
+    content = request.form['content']
+
+    cursor.execute(
+        'INSERT INTO blogs(heading,content) VALUES(%s,%s)', (heading,content)
+    )
+    db.commit()
+
+    cursor.execute(
+        'INSERT INTO blog_movie_user VALUES(%s,%s,%s)', (cursor.lastrowid,movie_id,user)
+    )
+    db.commit()
+
+    return redirect(url_for('blogs', movie_id=movie_id))
+
+
+@app.route('/<movie_id>/blogs/<blog_id>', methods=['GET', 'POST'])
+def blog(movie_id, blog_id):
+    user = session['user']
+
+    if request.method == 'GET':
+        cursor.execute('SELECT blogs.*,username FROM blogs INNER JOIN blog_movie_user ON blogs.blog_id=blog_movie_user.blog_id WHERE blogs.blog_id=%s', 
+        (blog_id,))
+        blog = cursor.fetchone()
+
+        blog = {
+            'blog_id': blog[0],
+            'heading': blog[1],
+            'content': blog[2],
+            'published_on': blog[3],
+            'published_by': blog[4]
+        }
+
+        cursor.execute(
+            'SELECT comments.*,username FROM comments INNER JOIN comment_blog_user ON comments.comment_id=comment_blog_user.comment_id WHERE blog_id=%s',
+            (blog_id,)
+            )
+        comments = cursor.fetchall()
+
+        comments = [
+            {
+                'comment_id': comment[0],
+                'comment': comment[1],
+                'published_on': comment[2],
+                'published_by': comment[3]
+            }
+            for comment in comments
+        ]
+
+        return render_template('blog.html', blog=blog, comments=comments)
+
+    
+    comment = request.form['comment']
+    
+    cursor.execute(
+        'INSERT INTO comments(comment) VALUES(%s)', (comment,)
+    )
+    db.commit()
+
+    cursor.execute(
+        'INSERT INTO comment_blog_user VALUES(%s,%s,%s)', (cursor.lastrowid,blog_id,user)
+    )
+    db.commit()
+
+    return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
+
+
+
+@app.route('/blogs', methods=['GET'])
+def own_blogs():
+    user = session['user']
+    cursor.execute(
+        'SELECT blogs.blog_id,blogs.heading,blog_movie_user.movie_id FROM blogs INNER JOIN blog_movie_user on blogs.blog_id=blog_movie_user.blog_id WHERE blog_movie_user.username=%s',
+        (user,)
+    )
+    blogs = cursor.fetchall()
+    blogs = [
+        {
+            'blog_id': blog[0],
+            'heading': blog[1],
+            'movie_id': blog[2]
+        }
+        for blog in blogs
+    ]
+
+    return render_template('own_blogs.html', blogs=blogs)
 
 
 app.run(debug=True)
