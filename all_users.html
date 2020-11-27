@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <style>
+        body {
+         
+     background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQILz-BEdKR-EjPYPqYBQrB01l4JWsjRuhv4w&usqp=CAU');
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: 100% 100%;
+   }
+   h1{ color:blue; }
+     label{ color:blue;  }
+    </style>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+</head>
+<body>
+    <h1>{{ user }}</h1>
+    <br>
+    <h3> All the Users are: </h3>
+    <ul>
+        {% for i in users %}
+            <li>
+                Username :- {{ i.username }}<br>
+                Name     :- {{ i.name }}<br>
+                Email    :- {{ i.email }} <br>
+                Contact  :- {{ i.contact }}<br>
+                <a href = {{ url_for('delete_user', user_name=i.username) }}>Delete User</a>
+            </li>
+            <br><br>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href={{ url_for('home') }}>Back to Home</a>
+</body>
+</html>

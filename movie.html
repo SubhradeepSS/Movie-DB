@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <style>
+        body {
+         
+     background-image: url('https://previews.123rf.com/images/tamarindarts/tamarindarts1802/tamarindarts180200051/95853421-abstract-blue-waves-design-on-transparent-background-.jpg');
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: 100% 100%;
+   }
+   h1{ color:blue; }
+     label{ color:blue;  }
+
+     input[type=submit] {
+  background-color: blue;
+  border: none;
+  color: white;
+  padding: 4px 16px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie</title>
+</head>
+
+<body>
+    <h1>
+        Name: {{ movie.name }}
+    </h1>
+    <div>
+        Duration:- {{ movie.duration }}
+        <br>
+
+        Language:- {{ movie.language }}
+        <br>
+
+        Release Date:- {{ movie.release_date }}
+        <br>
+
+        Average Rating:- {{ movie.avg_rating }}
+    </div>
+    {% if user == 'admin' %}
+    <div>
+        <h2>User Ratings</h2>
+        <ul>
+            {% for rating in all_ratings %}
+            <li>
+                User : {{ rating.user_of_rating }} <br>
+                Rating: {{ rating.rating }} <br>
+                Review: {{ rating.review }} <br>
+                <a href = {{ url_for('rating_delete', movie_id=movie.movie_id, rating_id=rating.id) }}> 
+                Delete
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% if size == 0 %}
+    <div>
+        <h2>Give rating</h2>
+        <form method="post">
+            <input type="number" name="rating" placeholder="Rating">
+            <input type="text" name="review" placeholder="Review">
+            <input type="submit" value="Rate" >
+            
+        </form>
+    </div>
+    <br>
+    {% else %}
+    <h2>Your rating </h2>
+        {% for rating in ratings %}
+            <li>
+                Rating: {{ rating.rating }} <br>
+                Review: {{ rating.review }} <br>
+                <a href = {{ url_for('rating_edit', movie_id=movie.movie_id, rating_id=rating.id )}} >Edit</a>
+                <br>
+                <a href = {{ url_for('rating_delete', movie_id=movie.movie_id, rating_id=rating.id) }}> 
+                Delete
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+    <br><br>
+
+    {% if user != 'admin' %}
+    <a href = {{ url_for('all_ratings', movie_id=movie.movie_id) }}> 
+    View All Ratings of this Movie
+    </a>
+    <br><br>
+    {% endif %}
+    <a href={{ url_for('ratings') }}>View Your ratings</a>
+    <br>
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <style>
+        body {
+         
+     background-image: url('https://previews.123rf.com/images/tamarindarts/tamarindarts1802/tamarindarts180200051/95853421-abstract-blue-waves-design-on-transparent-background-.jpg');
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: 100% 100%;
+   }
+   h1{ color:blue; }
+     label{ color:blue;  }
+
+     input[type=submit] {
+  background-color: blue;
+  border: none;
+  color: white;
+  padding: 4px 16px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+    </style>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <h1>{{ user }}</h1>
+    <div>
+        Name: {{ name }} <br>
+        Email: {{ email }} <br>
+        Contact: {{ contact }} <br>
+    </div>
+    <br>
+    <form method="POST">
+        <input type="password" name="password" required placeholder="Password">
+        <input type="text" name="name" required placeholder="Name">
+        <input type="email" name="email" required placeholder="Email">
+        <input type="text" name="contact" required placeholder="Contact">
+        <input type="submit" value="Update Profile">
+    </form>
+
+    <br>
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+</html>

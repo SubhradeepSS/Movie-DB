@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+    <style>
+        body {
+         
+     background-image: url('https://image.freepik.com/free-vector/floating-forms-transparent-background_1035-6752.jpg');
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: 100% 100%;
+   }
+   h1{ color:blue; }
+     label{ color:blue;  }
+    </style>
+
+
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movies</title>
+</head>
+
+<body>
+    <h3>Movies List</h3>
+    <ol>
+        {% for movie in movies %}
+        <li>
+
+            Name:- {{ movie.name }}
+            <br>
+
+            Duration:- {{ movie.duration }}
+            <br>
+
+            Language:- {{ movie.language }}
+            <br>
+
+            <a href={{ url_for('movie', movie_id=movie.movie_id) }}>View details</a>
+            {% if user == 'admin' %}
+            <br>
+            <a href={{ url_for('movie_edit', movie_id=movie.movie_id) }} >Edit</a>
+            <br>
+            <a href={{ url_for('movie_delete', movie_id=movie.movie_id) }} >Delete</a>
+            {% endif %}
+            
+        </li>
+        <br>
+        {% endfor %}
+    </ol>
+    <br>
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+
+</html>

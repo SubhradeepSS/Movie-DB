@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <style>
+        body {
+         
+     background-image: url('https://previews.123rf.com/images/tamarindarts/tamarindarts1802/tamarindarts180200051/95853421-abstract-blue-waves-design-on-transparent-background-.jpg');
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: 100% 100%;
+   }
+   h1{ color:blue; }
+     label{ color:blue;  }
+
+     input[type=submit] {
+  background-color: blue;
+  border: none;
+  color: white;
+  padding: 4px 16px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating Edit</title>
+</head>
+<body>
+    <h1>{{ user }}</h1>
+    <h3> Rating Edit </h3>
+    <h3> Movie ID : {{ movie_id }} </h3>
+    <li>
+        Name:- {{ movie.name }}
+        <br>
+        Duration:- {{ movie.duration }}
+        <br>
+        Language:- {{ movie.language }}
+        <br>
+    </li>
+    <br>
+    <form method="POST">
+        Rating:- 
+        <input type="number" name="rating"  value = "{{ ratings.rating }}">
+        <br><br>
+        Review:-
+        <input type="text" name = "review" value = "{{ ratings.review }}" >
+        <br><br>
+        <input type="submit" value="Update Rating">
+    </form>
+
+    <br>
+    <a href={{ url_for('movies') }}>Movies List</a>
+    <br>
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+</html>

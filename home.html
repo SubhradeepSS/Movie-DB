@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <style>
+      body {
+       
+   background-image: url('https://previews.123rf.com/images/tamarindarts/tamarindarts1802/tamarindarts180200051/95853421-abstract-blue-waves-design-on-transparent-background-.jpg');
+   background-repeat: no-repeat;
+   background-attachment: fixed;
+   background-size: 100% 100%;
+ }
+ h1{ color:blue; }
+   label{ color:blue;  }
+  </style>
+
+
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+  <body>
+    <h2>{{ user }}</h2>
+
+    {% if user == 'admin' %}
+    <a href={{ url_for('addMovie') }}>Add Movie</a>
+    <br />
+    {% endif %}
+
+   
+    <a href={{ url_for('movies') }}>View all Movies</a>
+    <br />
+
+    <a href={{ url_for('ratings') }}>View your ratings</a>
+    <br />
+
+    <a href={{ url_for('profile') }}>View your profile</a>
+    <br />
+     {% if user == 'admin' %}
+    <a href={{ url_for('all_users') }}>View All Users</a>
+    <br>
+    {% endif %}
+    <a href={{ url_for('logout') }}>Logout</a>
+  </body>
+</html>

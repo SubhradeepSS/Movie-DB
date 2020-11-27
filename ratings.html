@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <style>
+        body {
+         
+     background-image: url('https://previews.123rf.com/images/tamarindarts/tamarindarts1802/tamarindarts180200051/95853421-abstract-blue-waves-design-on-transparent-background-.jpg');
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: 100% 100%;
+   }
+   h1{ color:blue; }
+     label{ color:blue;  }
+
+    
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your ratings</title>
+</head>
+<body>
+    <h1>Your ratings</h1>
+    <ul>
+        {% for rating in ratings %}
+            <li>
+                Movie Name: {{ rating.movie_name }} <br>
+                Rating: {{ rating.rating }} <br>
+                Review: {{ rating.review }} <br>
+                <a href = {{ url_for('rating_edit', movie_id=rating.movie_id, rating_id=rating.rating_id )}} >Edit</a>
+                <br>
+                <a href = {{ url_for('rating_delete_in_view_your', movie_id=rating.movie_id, rating_id=rating.rating_id) }}> 
+                Delete
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+</html>
