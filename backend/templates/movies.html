@@ -24,6 +24,7 @@
 
             <a href={{ url_for('movie', movie_id=movie.movie_id) }}>View details</a>
             {% if user == 'admin' %}
+            <br>
             <a href={{ url_for('movie_edit', movie_id=movie.movie_id) }} >Edit</a>
             <br>
             <a href={{ url_for('movie_delete', movie_id=movie.movie_id) }} >Delete</a>
