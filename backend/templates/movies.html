@@ -22,7 +22,7 @@
             Language:- {{ movie.language }}
             <br>
 
-            <a href={{ url_for('movie', user=user, movie_id=movie.movie_id) }}>View</a>
+            <a href={{ url_for('movie', user=user, movie_id=movie.movie_id) }}>View details</a>
             {% if user == 'admin' %}
             <a href={{ url_for('movie_edit', user=user, movie_id=movie.movie_id) }} >Edit</a>
             <br>
@@ -30,6 +30,7 @@
             {% endif %}
             
         </li>
+        <br>
         {% endfor %}
     </ol>
     <br>
