@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+</head>
+<body>
+    <h1>User : {{ user }}</h1>
+    <br>
+    <h3> All the Users Are </h3>
+    <ul>
+        {% for i in users %}
+            <li>
+                Username :- {{ i.username }}<br>
+                Name     :- {{ i.name }}<br>
+                Email    :- {{ i.email }} <br>
+                Contact  :- {{ i.contact }}<br>
+                <a href = {{ url_for('delete_user',user=user,user_name = i.username) }}>Delete User</a>
+            </li>
+            <br><br>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href={{ url_for('home', user=user) }}>Back to Home</a>
+</body>
+</html>

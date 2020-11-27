@@ -13,6 +13,7 @@
     <br />
     {% endif %}
 
+   
     <a href={{ url_for('movies', user=user) }}>View all Movies</a>
     <br />
 
@@ -21,6 +22,10 @@
 
     <a href={{ url_for('profile', user=user) }}>View your profile</a>
     <br />
+     {% if user == 'admin' %}
+    <a href={{ url_for('all_users', user=user) }}>View All Users</a>
+    <br>
+    {% endif %}
     <a href="/">Logout</a>
   </body>
 </html>

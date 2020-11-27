@@ -324,4 +324,31 @@ def rating_delete_in_view_your(user, movie_id, rating_id):
         return redirect(url_for('ratings', user=user))
 
 
+@app.route('/<user>/all_users', methods=['GET'])
+def all_users(user):
+    if request.method == 'GET':
+        sql_query = "SELECT * FROM users WHERE username != %s"
+        cursor.execute(sql_query, (user,))
+        users = cursor.fetchall()
+        users = [
+            {
+                'username': i[0],
+                'name':i[2],
+                'email':i[3],
+                'contact':i[4]
+            }
+            for i in users
+        ]
+        return render_template('all_users.html', users=users, user=user)
+
+
+@app.route('/<user>/delete_user/<user_name>', methods=['GET'])
+def delete_user(user, user_name):
+    if request.method == 'GET':
+        sql_query = "DELETE FROM users WHERE username = %s"
+        cursor.execute(sql_query, (user_name,))
+        db.commit()
+        return redirect(url_for('all_users', user=user))
+
+
 app.run(debug=True)
