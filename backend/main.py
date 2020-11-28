@@ -524,4 +524,35 @@ def edit_blog(movie_id, blog_id):
     return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
 
 
+@app.route('/<movie_id>/edit_comment/<blog_id>/<comment_id>', methods=['GET', 'POST'])
+def edit_comment(movie_id, blog_id, comment_id):
+    user = session['user']
+    cursor.execute(
+        'SELECT comments.*,username FROM comments INNER JOIN comment_blog_user ON comments.comment_id=comment_blog_user.comment_id WHERE blog_id=%s AND comments.comment_id=%s',
+        (blog_id, comment_id,)
+    )
+    comment = cursor.fetchone()
+    comments = {
+        'comment_id': comment[0],
+        'comment': comment[1],
+        'published_on': comment[2],
+        'published_by': comment[3]
+    }
+    if request.method == 'GET':
+        return render_template('comment_edit.html', comment=comments, movie_id=movie_id, blog_id=blog_id)
+    comment = request.form['comment']
+    sql_query = "UPDATE comments SET comment = %s WHERE comment_id=%s"
+    cursor.execute(sql_query, (comment, comment_id,))
+    db.commit()
+    return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
+
+
+@app.route('/<movie_id>/delete_blog/<blog_id>', methods=['GET'])
+def delete_blog(movie_id, blog_id):
+    if request.method == 'GET':
+        sql_query = "DELETE FROM blogs WHERE blog_id = %s"
+        cursor.execute(sql_query, (blog_id,))
+        return redirect(url_for('blogs', movie_id=movie_id))
+
+
 app.run(debug=True)
