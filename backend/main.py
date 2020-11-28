@@ -15,9 +15,18 @@ db = sql.connect(
 cursor = db.cursor()
 
 
-@app.route('/home', methods=['GET'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
-    return render_template('home.html', user=session['user'])
+    if request.method == 'GET':
+        return render_template('home.html', user=session['user'])
+    
+    username = request.form['username']
+    cursor.execute('SELECT username FROM users WHERE username=%s', (username,))
+    user = cursor.fetchone()
+    if not user:
+        return render_template('home.html', user=session['user'], errorMsg="No such user found")
+
+    return redirect(url_for('profile', username=username))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -66,17 +75,17 @@ def signup():
         return render_template('signup.html', signupFail="Please try with new username")
 
 
-@app.route('/profile', methods=['GET', 'POST'])
-def profile():
+@app.route('/profile/<username>', methods=['GET', 'POST'])
+def profile(username):
     user = session['user']
 
     if request.method == 'GET':
         cursor.execute(
-            'SELECT name,email,contact FROM users WHERE username=%s', (user,))
+            'SELECT name,email,contact FROM users WHERE username=%s', (username,))
         User = cursor.fetchone()
         if User == None:
             return redirect(url_for('login'))
-        return render_template('profile.html', user=user, name=User[0], email=User[1], contact=User[2])
+        return render_template('profile.html', user=username, session_user=user, name=User[0], email=User[1], contact=User[2])
 
     password = request.form['password']
     name = request.form['name']

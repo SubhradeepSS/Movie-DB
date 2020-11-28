@@ -13,14 +13,15 @@
         Contact: {{ contact }} <br>
     </div>
     <br>
-    <form method="POST">
-        <input type="password" name="password" required placeholder="Password">
-        <input type="text" name="name" required placeholder="Name">
-        <input type="email" name="email" required placeholder="Email">
-        <input type="text" name="contact" required placeholder="Contact">
-        <input type="submit" value="Update Profile">
-    </form>
-
+    {% if session_user == user %}
+        <form method="POST">
+            <input type="password" name="password" required placeholder="Password">
+            <input type="text" name="name" required placeholder="Name">
+            <input type="email" name="email" required placeholder="Email">
+            <input type="text" name="contact" required placeholder="Contact">
+            <input type="submit" value="Update Profile">
+        </form>
+    {% endif %}
     <br>
     <a href={{ url_for('home') }}>Home</a>
 </body>
