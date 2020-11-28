@@ -552,7 +552,17 @@ def delete_blog(movie_id, blog_id):
     if request.method == 'GET':
         sql_query = "DELETE FROM blogs WHERE blog_id = %s"
         cursor.execute(sql_query, (blog_id,))
+        db.commit()
         return redirect(url_for('blogs', movie_id=movie_id))
+
+
+@app.route('/<movie_id>/delete_comment/<blog_id>/<comment_id>', methods=['GET'])
+def delete_comment(movie_id, blog_id, comment_id):
+    if request.method == 'GET':
+        sql_query = "DELETE FROM comments WHERE comment_id=%s"
+        cursor.execute(sql_query, (comment_id,))
+        db.commit()
+        return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
 
 
 app.run(debug=True)

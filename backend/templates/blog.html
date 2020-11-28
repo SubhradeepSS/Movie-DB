@@ -34,7 +34,8 @@
                         <br>by: <strong>{{ comment.published_by }}</strong></p>
                 </li>
                 {% if user == comment.published_by %}
-                    <a href = {{ url_for('edit_comment',blog_id=blog.blog_id,comment_id = comment.comment_id,movie_id = movie_id) }}>Edit</a>
+                    <a href = {{ url_for('edit_comment',blog_id=blog.blog_id,comment_id = comment.comment_id,movie_id = movie_id) }}>Edit</a><br>
+                    <a href = {{ url_for('delete_comment',blog_id=blog.blog_id,comment_id = comment.comment_id,movie_id = movie_id) }}>Delete</a>
                 {% endif %}
             {% endfor %}
         </ul>
