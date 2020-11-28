@@ -19,7 +19,7 @@ cursor = db.cursor()
 def home():
     if request.method == 'GET':
         return render_template('home.html', user=session['user'])
-    
+
     username = request.form['username']
     cursor.execute('SELECT username FROM users WHERE username=%s', (username,))
     user = cursor.fetchone()
@@ -85,7 +85,40 @@ def profile(username):
         User = cursor.fetchone()
         if User == None:
             return redirect(url_for('login'))
-        return render_template('profile.html', user=username, session_user=user, name=User[0], email=User[1], contact=User[2])
+
+        sql_query = "SELECT comments.*,blog_movie_user.blog_id,blog_movie_user.movie_id,heading,content FROM comments INNER JOIN comment_blog_user ON comments.comment_id=comment_blog_user.comment_id INNER JOIN blog_movie_user ON comment_blog_user.blog_id = blog_movie_user.blog_id INNER JOIN blogs ON blogs.blog_id = blog_movie_user.blog_id WHERE comment_blog_user.username = %s"
+        cursor.execute(sql_query, (username,))
+        comments = cursor.fetchall()
+        comments = [
+            {
+                'comment_id': i[0],
+                'comment':i[1],
+                'published_on':i[2],
+                'blog_id':i[3],
+                'movie_id':i[4],
+                'heading':i[5],
+                'content':i[6]
+            }
+            for i in comments
+        ]
+        comment_size = len(comments)
+        sql_query = "SELECT blogs.*,movies.movie_id,movies.name FROM blogs NATURAL JOIN blog_movie_user NATURAL JOIN movies WHERE username = %s"
+        cursor.execute(sql_query, (username,))
+        blogs = cursor.fetchall()
+        blogs = [
+            {
+                'blog_id': i[0],
+                'heading':i[1],
+                'content':i[2],
+                'published_on':i[3],
+                'movie_id':i[4],
+                'movie_name':i[5]
+
+            }
+            for i in blogs
+        ]
+        blog_size = len(blogs)
+        return render_template('profile.html', user=username, session_user=user, name=User[0], email=User[1], contact=User[2], comments=comments, blogs=blogs, comment_size=comment_size, blog_size=blog_size)
 
     password = request.form['password']
     name = request.form['name']
@@ -98,7 +131,7 @@ def profile(username):
     )
     db.commit()
 
-    return redirect(url_for('profile'))
+    return redirect(url_for('profile', username=user))
 
 
 @app.route('/movies', methods=['GET'])

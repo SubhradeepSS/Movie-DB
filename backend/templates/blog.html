@@ -8,7 +8,7 @@
 <body>
     <h1>{{ blog.heading }}</h1>
     <h4>Published on: {{ blog.published_on }}</h4>
-    <h4>Published by: {{ blog.published_by }}</h4>
+    <h4>Published by: <a href={{ url_for('profile',username = blog.published_by) }} >{{ blog.published_by }}</a></h4>
     <h3>Content:</h3>
     <p>{{ blog.content }}</p>
     {% if user == blog.published_by %}
@@ -31,7 +31,7 @@
                 <li>
                     <h3>{{ comment.comment }}</h3>
                     <p>Published <br>on: <strong>{{ comment.published_on }}</strong>
-                        <br>by: <strong>{{ comment.published_by }}</strong></p>
+                        <br>by: <a href= {{url_for('profile',username=comment.published_by) }} ><strong>{{ comment.published_by }}</strong></a></p>
                 </li>
                 {% if user == comment.published_by %}
                     <a href = {{ url_for('edit_comment',blog_id=blog.blog_id,comment_id = comment.comment_id,movie_id = movie_id) }}>Edit</a><br>

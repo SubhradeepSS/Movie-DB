@@ -13,7 +13,7 @@
             Comment:- {{ i.comment }} <br>
             For blog :- <a href={{ url_for('blog',movie_id = i.movie_id,blog_id = i.blog_id) }}> {{ i.heading }}</a>
             <br> Published on:- <strong>{{ i.published_on }} </strong>
-            <br>
+            <br><br><br>
         </li>
         {% endfor %}
     </ul>
