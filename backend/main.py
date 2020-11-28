@@ -28,7 +28,8 @@ def login():
     username = request.form['username']
     password = request.form['password']
 
-    cursor.execute('SELECT * FROM users WHERE username=%s AND password=%s', (username, password))
+    cursor.execute(
+        'SELECT * FROM users WHERE username=%s AND password=%s', (username, password))
     user = cursor.fetchone()
     if user:
         session['user'] = username
@@ -70,7 +71,8 @@ def profile():
     user = session['user']
 
     if request.method == 'GET':
-        cursor.execute('SELECT name,email,contact FROM users WHERE username=%s', (user,))
+        cursor.execute(
+            'SELECT name,email,contact FROM users WHERE username=%s', (user,))
         User = cursor.fetchone()
         if User == None:
             return redirect(url_for('login'))
@@ -255,7 +257,8 @@ def movie_edit(movie_id):
     release_date = request.form['release_date']
 
     sql_query = " UPDATE movies SET name = %s , duration = %s,language = %s,release_date =%s WHERE movie_id = %s"
-    cursor.execute(sql_query, (name, duration, language, release_date, movie_id,))
+    cursor.execute(sql_query, (name, duration,
+                               language, release_date, movie_id,))
     db.commit()
     return redirect(url_for('movies'))
 
@@ -293,7 +296,7 @@ def rating_edit(movie_id, rating_id):
             'release_date': movie[4]
         }
         return render_template('rating_edit.html', ratings=ratings, user=user, movie_id=movie_id, movie=movie)
-    
+
     rating = request.form['rating']
     review = request.form['review']
     sql_query = "UPDATE ratings SET rating =%s ,review =%s WHERE rating_id=%s"
@@ -336,7 +339,7 @@ def all_ratings(movie_id):
     name = "Temp"
     for i in temp:
         name = i[0]
-    
+
     return render_template('all_ratings.html', ratings=all_ratings, user=user, movie_name=name, movie_id=movie_id)
 
 
@@ -399,7 +402,8 @@ def blogs(movie_id):
             for blog in blogs
         ]
 
-        cursor.execute('SELECT name FROM movies WHERE movie_id=%s', (movie_id,))
+        cursor.execute(
+            'SELECT name FROM movies WHERE movie_id=%s', (movie_id,))
         movie = cursor.fetchone()[0]
 
         return render_template('blogs.html', user=user, blogs=blogs, movie=movie, movie_id=movie_id)
@@ -408,12 +412,13 @@ def blogs(movie_id):
     content = request.form['content']
 
     cursor.execute(
-        'INSERT INTO blogs(heading,content) VALUES(%s,%s)', (heading,content)
+        'INSERT INTO blogs(heading,content) VALUES(%s,%s)', (heading, content)
     )
     db.commit()
 
     cursor.execute(
-        'INSERT INTO blog_movie_user VALUES(%s,%s,%s)', (cursor.lastrowid,movie_id,user)
+        'INSERT INTO blog_movie_user VALUES(%s,%s,%s)', (
+            cursor.lastrowid, movie_id, user)
     )
     db.commit()
 
@@ -425,8 +430,8 @@ def blog(movie_id, blog_id):
     user = session['user']
 
     if request.method == 'GET':
-        cursor.execute('SELECT blogs.*,username FROM blogs INNER JOIN blog_movie_user ON blogs.blog_id=blog_movie_user.blog_id WHERE blogs.blog_id=%s', 
-        (blog_id,))
+        cursor.execute('SELECT blogs.*,username FROM blogs INNER JOIN blog_movie_user ON blogs.blog_id=blog_movie_user.blog_id WHERE blogs.blog_id=%s',
+                       (blog_id,))
         blog = cursor.fetchone()
 
         blog = {
@@ -440,7 +445,7 @@ def blog(movie_id, blog_id):
         cursor.execute(
             'SELECT comments.*,username FROM comments INNER JOIN comment_blog_user ON comments.comment_id=comment_blog_user.comment_id WHERE blog_id=%s',
             (blog_id,)
-            )
+        )
         comments = cursor.fetchall()
 
         comments = [
@@ -453,23 +458,22 @@ def blog(movie_id, blog_id):
             for comment in comments
         ]
 
-        return render_template('blog.html', blog=blog, comments=comments)
+        return render_template('blog.html', blog=blog, comments=comments, user=user, movie_id=movie_id)
 
-    
     comment = request.form['comment']
-    
+
     cursor.execute(
         'INSERT INTO comments(comment) VALUES(%s)', (comment,)
     )
     db.commit()
 
     cursor.execute(
-        'INSERT INTO comment_blog_user VALUES(%s,%s,%s)', (cursor.lastrowid,blog_id,user)
+        'INSERT INTO comment_blog_user VALUES(%s,%s,%s)', (
+            cursor.lastrowid, blog_id, user)
     )
     db.commit()
 
     return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
-
 
 
 @app.route('/blogs', methods=['GET'])
@@ -489,7 +493,35 @@ def own_blogs():
         for blog in blogs
     ]
 
-    return render_template('own_blogs.html', blogs=blogs)
+    return render_template('own_blogs.html', blogs=blogs, user=user)
+
+
+@app.route('/<movie_id>/edit_blog/<blog_id>', methods=['GET', 'POST'])
+def edit_blog(movie_id, blog_id):
+    user = session['user']
+    cursor.execute('SELECT blogs.*,username FROM blogs INNER JOIN blog_movie_user ON blogs.blog_id=blog_movie_user.blog_id WHERE blogs.blog_id=%s',
+                   (blog_id,))
+    blog = cursor.fetchone()
+
+    blog = {
+        'blog_id': blog[0],
+        'heading': blog[1],
+        'content': blog[2],
+        'published_on': blog[3],
+        'published_by': blog[4]
+    }
+    if request.method == 'GET':
+
+        return render_template('blog_edit.html', blog=blog, user=user, movie_id=movie_id)
+
+    heading = request.form['heading']
+    content = request.form['content']
+
+    sql_query = "UPDATE blogs SET content=%s , heading=%s WHERE blog_id = %s"
+    cursor.execute(sql_query, (content, heading, blog['blog_id'],))
+    db.commit()
+
+    return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
 
 
 app.run(debug=True)

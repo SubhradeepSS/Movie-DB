@@ -12,8 +12,10 @@
     <div>
         <h2>Add your blog related to the movie</h2>
         <form method="POST">
-            <input type="text" name="heading" placeholder="Heading">
-            <input type="text" name="content" placeholder="Content">
+            Heading :- 
+            <input type="text" name="heading" placeholder="Heading"><br><br>
+            Content :-
+            <textarea rows = "6" cols="50" name = "content" placeholder = "Content" ></textarea>
             <input type="submit" value="Add">
         </form>
     </div>
@@ -28,6 +30,8 @@
             {% endfor %}
         </ul>  
     </div>
+    <br>
+    <a href = {{ url_for('movie',movie_id=movie_id) }}>Go Back</a>
     <br>
     <a href={{ url_for('home') }}>Home</a>
 </body>
