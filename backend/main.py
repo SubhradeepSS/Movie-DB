@@ -550,6 +550,9 @@ def edit_comment(movie_id, blog_id, comment_id):
 @app.route('/<movie_id>/delete_blog/<blog_id>', methods=['GET'])
 def delete_blog(movie_id, blog_id):
     if request.method == 'GET':
+        sql_query = "DELETE FROM comments WHERE comment_id IN (SELECT comment_blog_user.comment_id FROM comment_blog_user WHERE comment_blog_user.blog_id = %s)"
+        cursor.execute(sql_query, (blog_id,))
+        db.commit()
         sql_query = "DELETE FROM blogs WHERE blog_id = %s"
         cursor.execute(sql_query, (blog_id,))
         db.commit()
@@ -563,6 +566,28 @@ def delete_comment(movie_id, blog_id, comment_id):
         cursor.execute(sql_query, (comment_id,))
         db.commit()
         return redirect(url_for('blog', movie_id=movie_id, blog_id=blog_id))
+
+
+@app.route('/comments', methods=['GET', 'POST'])
+def own_comments():
+    if request.method == 'GET':
+        user = session['user']
+        sql_query = "SELECT comments.*,blog_movie_user.blog_id,blog_movie_user.movie_id,heading,content FROM comments INNER JOIN comment_blog_user ON comments.comment_id=comment_blog_user.comment_id INNER JOIN blog_movie_user ON comment_blog_user.blog_id = blog_movie_user.blog_id INNER JOIN blogs ON blogs.blog_id = blog_movie_user.blog_id WHERE comment_blog_user.username = %s"
+        cursor.execute(sql_query, (user,))
+        comment = cursor.fetchall()
+        comment = [
+            {
+                'comment_id': i[0],
+                'comment':i[1],
+                'published_on':i[2],
+                'blog_id':i[3],
+                'movie_id':i[4],
+                'heading':i[5],
+                'content':i[6]
+            }
+            for i in comment
+        ]
+        return render_template('own_comments.html', comment=comment, user=user)
 
 
 app.run(debug=True)

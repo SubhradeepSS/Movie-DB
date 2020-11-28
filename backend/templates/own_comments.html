@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+</head>
+<body>
+    <h1>Your comments: </h1>
+    <ul>
+        {% for i in comment %}
+        <li>            
+            Comment:- {{ i.comment }} <br>
+            For blog :- <a href={{ url_for('blog',movie_id = i.movie_id,blog_id = i.blog_id) }}> {{ i.heading }}</a>
+            <br> Published on:- <strong>{{ i.published_on }} </strong>
+            <br>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a href={{ url_for('home') }}>Home</a>
+</body>
+</html>
