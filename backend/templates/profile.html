@@ -13,6 +13,7 @@
         Contact: {{ contact }} <br>
     </div>
     <br>
+
     {% if session_user == user %}
         <h4>Update the details</h4>
         <form method="POST">
@@ -23,35 +24,41 @@
             <input type="submit" value="Update Profile">
         </form>
     {% endif %}
+
     <br>
+
     {% if blog_size > 0 %}
-    <h4>Blogs of the user are :- </h4>
-    <ul>
-        {% for blog in blogs %}
-            <li>
-                <a href={{ url_for('blog', movie_id=movie_id, blog_id=blog.blog_id) }}>{{ blog.heading }}</a>
-            </li>
-        {% endfor %}
-    <ul>
+        <h4>Blogs of the user are :- </h4>
+        <ul>
+            {% for blog in blogs %}
+                <li>
+                    <a href={{ url_for('blog', movie_id=blog.movie_id, blog_id=blog.blog_id) }}>{{ blog.heading }}</a>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-    <h4>There are no Blogs written by this user</h4>
-    <br><br>
+        <h4>There are no Blogs written by this user</h4>
     {% endif %}
+
+    <br><br>
+
     {% if comment_size > 0 %}
-        <h4> Comments of the user are </h4><br>
+    <h4>Comments of the user are </h4><br>
     <ul>
         {% for i in comments %}
             <li>            
                 Comment:- {{ i.comment }} <br>
-                For blog :- <a href={{ url_for('blog',movie_id = i.movie_id,blog_id = i.blog_id) }}> {{ i.heading }}</a>
+                For blog :- <a href={{ url_for('blog', movie_id=i.movie_id, blog_id=i.blog_id) }}> {{ i.heading }}</a>
                 <br> Published on:- <strong>{{ i.published_on }} </strong>
                 <br><br><br>
             </li>
         {% endfor %}
     </ul>    
     {% else %}
-    <h4>There are no comments made by this user</h4>
+        <h4>There are no comments made by this user</h4>
     {% endif %}
+
+    <br><br>
     <a href={{ url_for('home') }}>Home</a>
 </body>
 </html>
