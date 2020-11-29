@@ -28,6 +28,7 @@
         <h2>User Ratings</h2>
         <ul>
             {% for rating in all_ratings %}
+            {% if user != rating.user_of_rating %}
             <li>
                 User : {{ rating.user_of_rating }} <br>
                 Rating: {{ rating.rating }} <br>
@@ -36,6 +37,7 @@
                 Delete
                 </a>
             </li>
+            {% endif %}
             {% endfor %}
         </ul>
     </div>
